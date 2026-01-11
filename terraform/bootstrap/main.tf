@@ -86,13 +86,7 @@ resource "aws_iam_policy" "github_actions" {
         Sid    = "CloudWatchLogs"
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "logs:TagResource",
-          "logs:DeleteLogGroup"
+          "logs:*"
         ]
         Resource = "*"
       }
