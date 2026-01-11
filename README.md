@@ -1,106 +1,296 @@
 # Mobile-First Cloud Development: A Proof of Concept
 
-> **Deploying production infrastructure from anywhere using AI-powered development in GitHub Codespaces**
+> **Building a complete DevSecOps pipeline from anywhere using AI-powered development in GitHub Codespaces**
 
 ## The Vision
 
-This repository demonstrates a paradigm shift in cloud development: the ability to build, deploy, and manage production AWS infrastructure from any device with a browser - including a mobile phone.
+This repository demonstrates a paradigm shift in cloud development: the ability to build, deploy, and manage production AWS infrastructure **with enterprise-grade security scanning** from any device with a browser - including a mobile phone.
+
+**What makes this special:** The entire infrastructure, CI/CD pipeline, and DevSecOps tooling was built through natural language conversation with Claude Code - demonstrating that AI-assisted development can handle complex, security-conscious enterprise workflows.
 
 ---
 
 ## Table of Contents
 
 1. [What This POC Proves](#what-this-poc-proves)
-2. [The Complete Pattern Explained](#the-complete-pattern-explained)
-3. [Deep Dive: GitHub Actions](#deep-dive-github-actions)
-4. [Deep Dive: The OIDC Authentication](#deep-dive-the-oidc-authentication)
-5. [Deep Dive: Terraform](#deep-dive-terraform)
-6. [Deep Dive: Linting and Quality Gates](#deep-dive-linting-and-quality-gates)
-7. [The Mobile Development Experience](#the-mobile-development-experience)
-8. [Verification Results](#verification-results)
-9. [How to Recreate This](#how-to-recreate-this)
-10. [Repository Structure](#repository-structure)
+2. [The Complete DevSecOps Pipeline](#the-complete-devsecops-pipeline)
+3. [Deep Dive: Security Scanning](#deep-dive-security-scanning)
+4. [Deep Dive: GitHub Actions](#deep-dive-github-actions)
+5. [Deep Dive: The OIDC Authentication](#deep-dive-the-oidc-authentication)
+6. [Deep Dive: Terraform](#deep-dive-terraform)
+7. [Deep Dive: Linting and Quality Gates](#deep-dive-linting-and-quality-gates)
+8. [The AI-Powered Development Experience](#the-ai-powered-development-experience)
+9. [Verification Results](#verification-results)
+10. [How to Recreate This](#how-to-recreate-this)
+11. [Repository Structure](#repository-structure)
 
 ---
 
 ## What This POC Proves
 
-This proof of concept validates that **a complete production deployment workflow can be executed entirely through natural language conversation with an AI assistant**, from any device, anywhere in the world.
+This proof of concept validates that **a complete DevSecOps workflow can be built and executed entirely through natural language conversation with an AI assistant**, from any device, anywhere in the world.
 
 ### Key Capabilities Demonstrated
 
 | Capability | Description |
 |------------|-------------|
 | **Device Agnostic** | Entire workflow executed via browser - works on iPhone, Android, tablet, or desktop |
-| **Real-Time Sync** | Commands typed on mobile appeared instantly on desktop and vice versa |
+| **Full DevSecOps Pipeline** | Security scanning, cost estimation, dependency updates, and deployment automation |
+| **Real-Time Security Feedback** | Trivy IaC scanning finds vulnerabilities before deployment |
+| **Automated Dependency Management** | Dependabot creates PRs for outdated dependencies automatically |
+| **Cost Visibility** | Infracost shows infrastructure cost impact on every PR |
 | **Full AWS Integration** | Claude Code authenticated with AWS via SSO and executed real infrastructure changes |
-| **End-to-End Deployment** | From empty repo to live website with CI/CD pipeline in a single conversation |
-| **Direct Verification** | AI agent accessed the deployed website and CloudWatch logs to confirm success |
-| **Complete Teardown** | All AWS resources created and destroyed with verification - zero residual costs |
+| **End-to-End Deployment** | From empty repo to live website with complete DevSecOps pipeline in a single conversation |
 
 ---
 
-## The Complete Pattern Explained
+## The Complete DevSecOps Pipeline
 
-### High-Level Flow
+### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        MOBILE OR DESKTOP BROWSER                         │
-│                                                                          │
-│  ┌─────────────────┐    ┌──────────────────┐    ┌───────────────────┐  │
-│  │ GitHub Codespace │───▶│   Claude Code    │───▶│   AWS CLI/SSO     │  │
-│  │  (VS Code Web)   │    │  (AI Assistant)  │    │  (Direct Access)  │  │
-│  └─────────────────┘    └──────────────────┘    └───────────────────┘  │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        DEVELOPER EXPERIENCE                                  │
+│                                                                              │
+│  ┌─────────────────┐    ┌──────────────────┐    ┌───────────────────────┐  │
+│  │ GitHub Codespace │───▶│   Claude Code    │───▶│   AWS CLI/SSO         │  │
+│  │  (VS Code Web)   │    │  (AI Assistant)  │    │  (Direct Access)      │  │
+│  │  Mobile/Desktop  │    │  Natural Language│    │  Real Infrastructure  │  │
+│  └─────────────────┘    └──────────────────┘    └───────────────────────┘  │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼ git push
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         GITHUB SECURITY LAYER                                │
+│                                                                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐│
+│  │  Dependabot │  │   Secret    │  │   CodeQL    │  │   Branch            ││
+│  │  Auto PRs   │  │  Scanning   │  │   Analysis  │  │   Protection        ││
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────────────┘│
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼ triggers workflow
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         CI/CD PIPELINE (GitHub Actions)                      │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │ JOB 1: Security Scan                                                     ││
+│  │ ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────────────┐  ││
+│  │ │   Trivy     │─▶│   Upload    │─▶│   Results in GitHub Security    │  ││
+│  │ │  IaC Scan   │  │   SARIF     │  │   Tab (15 findings found!)      │  ││
+│  │ └─────────────┘  └─────────────┘  └─────────────────────────────────┘  ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+│                         │                                                    │
+│                         ▼ must pass                                          │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │ JOB 2: Infracost (PRs only)                                              ││
+│  │ ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────────────┐  ││
+│  │ │   Compare   │─▶│  Calculate  │─▶│   Post Cost Comment on PR       │  ││
+│  │ │  Base→Head  │  │   $ Diff    │  │   "This will cost +$X/month"    │  ││
+│  │ └─────────────┘  └─────────────┘  └─────────────────────────────────┘  ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+│                         │                                                    │
+│                         ▼ parallel                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │ JOB 3: Terraform Plan                                                    ││
+│  │ ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌───────────────┐ ││
+│  │ │  Init   │─▶│   Fmt   │─▶│Validate │─▶│  Plan   │─▶│ Upload Plan   │ ││
+│  │ │         │  │ (Lint)  │  │(Syntax) │  │(Preview)│  │  (Artifact)   │ ││
+│  │ └─────────┘  └─────────┘  └─────────┘  └─────────┘  └───────────────┘ ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+│                         │                                                    │
+│                         ▼ only on main branch                                │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │ JOB 4: Terraform Apply                                                   ││
+│  │ ┌─────────┐  ┌─────────────┐  ┌───────────┐  ┌─────────────────────┐  ││
+│  │ │  OIDC   │─▶│  Download   │─▶│   Apply   │─▶│   Log to CloudWatch │  ││
+│  │ │  Auth   │  │    Plan     │  │  Changes  │  │   (Audit Trail)     │  ││
+│  │ └─────────┘  └─────────────┘  └───────────┘  └─────────────────────┘  ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              AWS CLOUD                                   │
-│                                                                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐│
-│  │  S3 Static  │  │  IAM OIDC   │  │  DynamoDB   │  │   CloudWatch    ││
-│  │   Website   │  │    Role     │  │  TF State   │  │     Logs        ││
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────────┘│
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           GITHUB ACTIONS                                 │
-│                                                                          │
-│  Push to main ──▶ OIDC Auth ──▶ Terraform Plan ──▶ Terraform Apply      │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              AWS CLOUD                                       │
+│                                                                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐│
+│  │  S3 Static  │  │  IAM OIDC   │  │  DynamoDB   │  │     CloudWatch      ││
+│  │   Website   │  │    Role     │  │  TF State   │  │   Deployment Logs   ││
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────────────┘│
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Step-by-Step Breakdown
+### The DevSecOps Flow (Step-by-Step)
 
 ```
-1. You write code (Terraform files, HTML, etc.)
+1. Developer writes code (via Claude Code + natural language)
               ↓
-2. You commit + push to GitHub
+2. Commit + push to GitHub
               ↓
-3. GitHub detects the push (the "hook")
+3. SECRET SCANNING: GitHub checks for leaked credentials
               ↓
-4. GitHub Actions workflow is triggered automatically
+4. WORKFLOW TRIGGERED: GitHub Actions starts
               ↓
-5. A fresh Linux machine spins up in GitHub's cloud
+5. SECURITY SCAN: Trivy scans IaC for vulnerabilities
+   └── Found 15 findings (8 High, 2 Medium, 5 Low)
+   └── Results uploaded to GitHub Security tab
               ↓
-6. Terraform is installed on that machine
+6. COST ESTIMATION: Infracost calculates $ impact (on PRs)
+   └── "This change will cost +$0.50/month"
               ↓
-7. OIDC authenticates with AWS (no passwords stored!)
+7. TERRAFORM LINT: Format and syntax checking
               ↓
-8. Terraform reads your .tf files
+8. TERRAFORM PLAN: Preview what will change
               ↓
-9. Terraform sends AWS SDK commands directly to AWS APIs
+9. TERRAFORM APPLY: Make changes in AWS (main branch only)
               ↓
-10. AWS creates/updates/deletes resources
+10. CLOUDWATCH: Log deployment for audit trail
               ↓
-11. Success or failure is reported back
-              ↓
-12. You see green ✅ or red ❌ in GitHub
+11. DEPENDABOT: Monitors for outdated dependencies
+    └── Created 6 PRs automatically after first run!
+```
+
+---
+
+## Deep Dive: Security Scanning
+
+### Security Tools Enabled
+
+| Tool | What It Does | Where Results Appear |
+|------|--------------|---------------------|
+| **Trivy** | Scans Terraform for security misconfigurations | GitHub Security tab |
+| **Dependabot** | Auto-creates PRs for outdated dependencies | Pull Requests tab |
+| **CodeQL** | Deep code analysis for vulnerabilities | GitHub Security tab |
+| **Secret Scanning** | Detects leaked API keys, passwords, tokens | GitHub Security tab |
+| **Push Protection** | Blocks pushes containing secrets | Rejected at git push |
+
+### Trivy IaC Scanning
+
+Trivy scans our Terraform code and found 15 security findings:
+
+#### High Severity (8 findings)
+| Finding | File | Explanation |
+|---------|------|-------------|
+| S3 encryption should use CMK | website/main.tf | Using default encryption, not customer-managed keys |
+| S3 Access block issues (4) | website/main.tf | **False positive** - public access required for static website |
+| Unrestricted S3 IAM Policies (2) | bootstrap/main.tf | `s3:*` permission is broad - could scope down |
+| S3 encryption should use CMK | bootstrap/main.tf | State bucket using AES256 instead of KMS |
+
+#### Medium Severity (2 findings)
+| Finding | File | Explanation |
+|---------|------|-------------|
+| S3 versioning not enabled | website/main.tf | Website bucket lacks versioning for rollback |
+| DynamoDB point-in-time recovery | bootstrap/main.tf | Lock table lacks PITR backup |
+
+#### Low Severity (5 findings)
+| Finding | File | Explanation |
+|---------|------|-------------|
+| S3 Bucket Logging (2) | both main.tf | Access logging not enabled |
+| CloudWatch CMK encryption | website/main.tf | Using default encryption |
+| DynamoDB CMK encryption | bootstrap/main.tf | Using default encryption |
+
+#### Understanding the Findings
+
+**Important context:** Some "High" findings are **expected for a public static website**:
+- You **need** public access for a static website to work
+- These would be genuine issues for a private data bucket
+
+**Production recommendations:**
+- Scope down IAM policies from `s3:*` to specific actions
+- Enable S3 versioning for rollback capability
+- Enable access logging for audit trails
+- Consider KMS encryption for sensitive workloads (adds cost)
+
+### How Trivy Works in Our Pipeline
+
+```yaml
+# From .github/workflows/deploy.yml
+- name: Run Trivy IaC scan
+  uses: aquasecurity/trivy-action@master
+  with:
+    scan-type: 'config'           # Scan configuration files (Terraform)
+    scan-ref: './terraform'       # Scan this directory
+    format: 'sarif'               # Output in SARIF format
+    output: 'trivy-results.sarif' # Save to this file
+    severity: 'CRITICAL,HIGH,MEDIUM'  # Report these severities
+
+- name: Upload Trivy scan results
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: 'trivy-results.sarif'
+    category: 'trivy-iac'
+  # Results appear in GitHub Security tab!
+```
+
+### Dependabot Configuration
+
+Dependabot automatically monitors and updates dependencies:
+
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  # Terraform provider updates
+  - package-ecosystem: "terraform"
+    directory: "/terraform/bootstrap"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(deps):"
+
+  - package-ecosystem: "terraform"
+    directory: "/terraform/website"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(deps):"
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(deps):"
+```
+
+**Result:** Dependabot created 6 PRs within minutes of being enabled:
+- Updated `actions/checkout` to latest
+- Updated `actions/upload-artifact` to latest
+- Updated Terraform providers
+- Each PR includes changelog and compatibility notes
+
+### Infracost (Cost Estimation)
+
+Infracost shows the cost impact of infrastructure changes on PRs:
+
+```yaml
+# From .github/workflows/deploy.yml
+infracost:
+  name: Infracost
+  runs-on: ubuntu-latest
+  if: github.event_name == 'pull_request'
+
+  steps:
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v3
+      with:
+        api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+    - name: Generate cost estimate
+      run: |
+        infracost diff --path=pr/terraform/website \
+          --compare-to=/tmp/infracost-base.json \
+          --format=json
+
+    - name: Post Infracost comment
+      uses: infracost/actions/comment@v3
+      # Posts a comment like:
+      # "This PR will increase costs by $0.50/month"
 ```
 
 ---
@@ -124,18 +314,16 @@ your-repo/
 
 If GitHub sees a `.yml` file in `.github/workflows/`, it reads it and follows the instructions.
 
-### Our Workflow File Explained
+### Our Complete Workflow
 
 The file `.github/workflows/deploy.yml` contains everything:
 
 ```yaml
+name: Deploy S3 Static Website
+
 # ═══════════════════════════════════════════════════════════════════════
 # PART 1: THE TRIGGER (Hook)
 # ═══════════════════════════════════════════════════════════════════════
-# This section defines WHEN the workflow runs
-
-name: Deploy S3 Static Website
-
 on:
   push:
     branches:
@@ -145,175 +333,139 @@ on:
       - main              # Run when someone opens a PR to main
   workflow_dispatch:       # Allow manual trigger from GitHub UI
 
-# Other triggers you could use:
-#   schedule:
-#     - cron: '0 9 * * *'  # Run every day at 9am
-#   release:
-#     types: [published]   # Run when a release is published
-
-
 # ═══════════════════════════════════════════════════════════════════════
 # PART 2: PERMISSIONS
 # ═══════════════════════════════════════════════════════════════════════
-# What is this workflow allowed to do?
-
 permissions:
-  id-token: write    # Required for OIDC authentication with AWS
-  contents: read     # Can read the repository code
-
+  id-token: write          # Required for OIDC authentication with AWS
+  contents: read           # Can read the repository code
+  security-events: write   # For uploading Trivy security scan results
+  pull-requests: write     # For Infracost PR comments
 
 # ═══════════════════════════════════════════════════════════════════════
 # PART 3: ENVIRONMENT VARIABLES
 # ═══════════════════════════════════════════════════════════════════════
-# Shared configuration values
-
 env:
   AWS_REGION: eu-west-1
   TF_VERSION: 1.6.0
 
-
 # ═══════════════════════════════════════════════════════════════════════
-# PART 4: THE JOBS
+# PART 4: THE JOBS (4 jobs in our DevSecOps pipeline)
 # ═══════════════════════════════════════════════════════════════════════
-# The actual work to be done
-
 jobs:
-  # -------------------------------------------------------------------
-  # JOB 1: Plan (runs on every push and PR)
-  # -------------------------------------------------------------------
-  terraform-plan:
-    name: Terraform Plan
-    runs-on: ubuntu-latest    # Use a fresh Linux machine
-
+  # JOB 1: Security Scan (runs first, blocks everything if critical issues)
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
     steps:
-      # STEP A: Download the code onto the machine
       - name: Checkout code
         uses: actions/checkout@v4
-        # This downloads your repo to the GitHub runner
 
-      # STEP B: Authenticate with AWS using OIDC
+      - name: Run Trivy IaC scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './terraform'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+
+  # JOB 2: Infracost (only on PRs - shows cost impact)
+  infracost:
+    name: Infracost
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    # ... cost estimation steps
+
+  # JOB 3: Terraform Plan (waits for security scan)
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs: security-scan      # Must pass security scan first!
+    steps:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::016164185850:role/github-actions-xxx
+          role-to-assume: arn:aws:iam::xxx:role/github-actions-xxx
           aws-region: ${{ env.AWS_REGION }}
-        # No passwords! OIDC handles authentication securely
 
-      # STEP C: Install Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      # STEP D: Initialize Terraform
-      - name: Terraform Init
-        working-directory: terraform/website
-        run: terraform init
-        # Downloads providers, sets up backend
-
-      # STEP E: Check code formatting (LINTING!)
       - name: Terraform Format Check
-        working-directory: terraform/website
-        run: terraform fmt -check
-        # Fails if code isn't properly formatted
+        run: terraform fmt -check     # LINTING!
 
-      # STEP F: Validate configuration
       - name: Terraform Validate
-        working-directory: terraform/website
-        run: terraform validate
-        # Checks for syntax errors
+        run: terraform validate       # SYNTAX CHECK!
 
-      # STEP G: Create the plan
       - name: Terraform Plan
-        working-directory: terraform/website
         run: terraform plan -out=tfplan
-        # Shows what WILL change (doesn't change anything yet)
 
-
-  # -------------------------------------------------------------------
-  # JOB 2: Apply (only runs on push to main, after plan succeeds)
-  # -------------------------------------------------------------------
+  # JOB 4: Terraform Apply (only on main, after plan succeeds)
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    needs: terraform-plan              # Must wait for plan job
+    needs: terraform-plan
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production            # Can add manual approval here
-
+    environment: production
     steps:
-      # ... similar steps, but ends with:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        # Actually makes the changes in AWS
+
+      - name: Log deployment to CloudWatch
+        run: |
+          aws logs put-log-events \
+            --log-group-name "/aws/s3/..." \
+            --log-events timestamp=$(date +%s000),message="Deployment successful"
 ```
 
-### The "Hook" Trigger Explained
-
-```yaml
-on:
-  push:
-    branches:
-      - main
-```
-
-**What this means in plain English:**
-
-"Hey GitHub, whenever ANYONE pushes commits to the `main` branch, please run this workflow."
-
-**The sequence:**
+### The Pipeline Flow Visualized
 
 ```
-Developer: git push origin main
-                ↓
-GitHub: "I received a push to main branch"
-                ↓
-GitHub: "Let me check .github/workflows/ folder"
-                ↓
-GitHub: "Found deploy.yml!"
-                ↓
-GitHub: "Reading the 'on:' section... it says 'push to main'"
-                ↓
-GitHub: "That matches! Starting the workflow..."
-                ↓
-Workflow runs automatically
-```
-
-### The Machine (Runner)
-
-```yaml
-runs-on: ubuntu-latest
-```
-
-**What this means:**
-
-GitHub spins up a fresh Linux virtual machine in their cloud. This machine:
-- Has nothing installed except basic Linux tools
-- Exists for ~5-10 minutes while your workflow runs
-- Gets completely deleted afterward
-- Is free (up to 2,000 minutes/month)
-
-**Think of it like:** Renting a computer for 5 minutes, using it, then returning it.
-
-### Steps Explained
-
-Each step is one command or action:
-
-```yaml
-steps:
-  # Using a pre-built action (someone else wrote this)
-  - name: Checkout code
-    uses: actions/checkout@v4
-
-  # Running a raw shell command
-  - name: Terraform Plan
-    run: terraform plan
-
-  # Running multiple commands
-  - name: Build and Test
-    run: |
-      npm install
-      npm run build
-      npm test
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            PUSH TO MAIN                                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    ▼                               ▼
+         ┌──────────────────┐            ┌──────────────────┐
+         │  security-scan   │            │    infracost     │
+         │  (Trivy IaC)     │            │  (PRs only)      │
+         │                  │            │                  │
+         │  Scans Terraform │            │  Calculates cost │
+         │  for vuln issues │            │  shows on PR     │
+         └──────────────────┘            └──────────────────┘
+                    │
+                    ▼ needs: security-scan
+         ┌──────────────────┐
+         │  terraform-plan  │
+         │                  │
+         │  1. OIDC Auth    │
+         │  2. Init         │
+         │  3. Fmt (lint)   │
+         │  4. Validate     │
+         │  5. Plan         │
+         │  6. Upload plan  │
+         └──────────────────┘
+                    │
+                    ▼ needs: terraform-plan (main branch only)
+         ┌──────────────────┐
+         │ terraform-apply  │
+         │                  │
+         │  1. OIDC Auth    │
+         │  2. Download plan│
+         │  3. Apply        │
+         │  4. CloudWatch   │
+         └──────────────────┘
+                    │
+                    ▼
+         ┌──────────────────┐
+         │  Website Live!   │
+         │                  │
+         │  Security scanned│
+         │  Cost estimated  │
+         │  Audit logged    │
+         └──────────────────┘
 ```
 
 ---
@@ -409,34 +561,6 @@ Terraform is "Infrastructure as Code" - you write text files describing what you
 | Hard to undo | `terraform destroy` removes everything |
 | Step-by-step commands | Describe end result |
 
-### Example Comparison
-
-**AWS CLI approach:**
-```bash
-# You have to figure out the order and run each command
-aws s3api create-bucket --bucket my-site
-aws s3api put-bucket-website --bucket my-site --website-configuration ...
-aws s3api put-bucket-policy --bucket my-site --policy ...
-aws s3 cp index.html s3://my-site/
-# And you have to remember all of this to delete it later!
-```
-
-**Terraform approach:**
-```hcl
-# Just describe what you want
-resource "aws_s3_bucket" "website" {
-  bucket = "my-site"
-}
-
-resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = aws_s3_bucket.website.id
-  index_document { suffix = "index.html" }
-}
-
-# Terraform figures out the order and tracks everything
-# To delete: terraform destroy (removes everything automatically)
-```
-
 ### How Terraform Talks to AWS
 
 ```
@@ -472,38 +596,6 @@ terraform apply     # Actually do it
 terraform destroy   # Remove everything
 ```
 
-### Terraform State
-
-Terraform keeps track of what it created in a "state file":
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ terraform.tfstate                                                │
-├─────────────────────────────────────────────────────────────────┤
-│ {                                                                │
-│   "resources": [                                                 │
-│     {                                                            │
-│       "type": "aws_s3_bucket",                                  │
-│       "name": "website",                                         │
-│       "id": "claude-codespaces-aws-s3-hello-world-site"         │
-│     },                                                           │
-│     {                                                            │
-│       "type": "aws_cloudwatch_log_group",                       │
-│       "name": "website",                                         │
-│       "id": "/aws/s3/claude-codespaces-..."                     │
-│     }                                                            │
-│   ]                                                              │
-│ }                                                                │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-This is how Terraform knows:
-- What exists
-- What to update
-- What to delete
-
-**We stored our state in S3** (not locally) so GitHub Actions could access it.
-
 ---
 
 ## Deep Dive: Linting and Quality Gates
@@ -516,137 +608,148 @@ Linting is automated code checking - a robot reads your code and catches problem
 |------|-----------------|---------|
 | **Syntax errors** | Code that won't run | Missing brackets, typos |
 | **Style issues** | Inconsistent formatting | Wrong indentation, mixed quotes |
-| **Security issues** | Vulnerabilities | Hardcoded passwords |
+| **Security issues** | Vulnerabilities | Hardcoded passwords, misconfigurations |
 | **Best practices** | Inefficient code | Unused variables |
 
-### Where Linting Fits in the Pipeline
+### Where Quality Gates Fit in Our Pipeline
 
 ```
 Push to main
        ↓
 ┌─────────────────────────────────┐
-│  LINT (Quality Gate #1)         │  ← Fast, cheap - fail early!
-│  - Code formatting              │
-│  - Syntax errors                │
-│  - Security scanning            │
+│  SECURITY SCAN (Gate #1)        │  ← Trivy catches IaC vulnerabilities
+│  - Terraform misconfigurations  │
+│  - Results in GitHub Security   │
 └─────────────────────────────────┘
-       ↓ Only if passes
+       ↓ Must pass
 ┌─────────────────────────────────┐
-│  TEST (Quality Gate #2)         │
-│  - Unit tests                   │
-│  - Integration tests            │
+│  LINT (Gate #2)                 │  ← Fast, cheap - fail early!
+│  - terraform fmt -check         │
+│  - terraform validate           │
 └─────────────────────────────────┘
-       ↓ Only if passes
+       ↓ Must pass
 ┌─────────────────────────────────┐
-│  BUILD (Quality Gate #3)        │
-│  - Compile code                 │
-│  - Create artifacts             │
+│  PLAN (Gate #3)                 │  ← Preview changes
+│  - terraform plan               │
+│  - Upload for review            │
 └─────────────────────────────────┘
-       ↓ Only if passes
+       ↓ Must pass (main only)
 ┌─────────────────────────────────┐
-│  DEPLOY (Final Step)            │
-│  - Push to production           │
+│  APPLY (Gate #4)                │  ← Actual deployment
+│  - terraform apply              │
+│  - Log to CloudWatch            │
 └─────────────────────────────────┘
 
 If ANY gate fails → Pipeline STOPS → Bad code never reaches production
 ```
 
-### Our Linting Steps
-
-In our workflow, we had these linting/validation steps:
-
-```yaml
-# Linting Step 1: Check Terraform formatting
-- name: Terraform Format Check
-  run: terraform fmt -check
-  # Fails if code isn't properly formatted
-  # Example: wrong indentation, inconsistent spacing
-
-# Linting Step 2: Validate Terraform syntax
-- name: Terraform Validate
-  run: terraform validate
-  # Fails if there are syntax errors
-  # Example: missing required field, wrong resource type
-```
-
-### Adding More Linting (Examples)
-
-For a more complete pipeline, you could add:
-
-```yaml
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      # Terraform linting
-      - name: Terraform Format
-        run: terraform fmt -check
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: TFLint (Terraform best practices)
-        uses: terraform-linters/setup-tflint@v3
-        run: tflint
-
-      # Security scanning
-      - name: tfsec (Terraform security)
-        uses: aquasecurity/tfsec-action@v1
-
-      # If you had JavaScript:
-      - name: ESLint
-        run: npx eslint src/*.js
-
-      # If you had Python:
-      - name: Pylint
-        run: pylint **/*.py
-
-      # If you had HTML:
-      - name: HTMLHint
-        run: npx htmlhint website/*.html
-
-      # If you had CSS:
-      - name: Stylelint
-        run: npx stylelint website/*.css
-```
-
-### Why Lint First?
-
-```
-Without linting:
-  Developer pushes broken code
-       ↓
-  Terraform runs for 5 minutes
-       ↓
-  Fails halfway through
-       ↓
-  Some resources created, some not
-       ↓
-  Messy state to clean up
-       ↓
-  20 minutes wasted
-
-With linting:
-  Developer pushes broken code
-       ↓
-  Lint check fails in 5 seconds
-       ↓
-  "Your code has formatting errors on line 23"
-       ↓
-  Developer fixes and pushes again
-       ↓
-  10 seconds wasted
-```
-
 ---
 
-## The Mobile Development Experience
+## The AI-Powered Development Experience
 
-A unique aspect of this POC was the seamless cross-device experience:
+### How This Was Built
 
-### Real-Time Synchronization
+This entire repository - infrastructure, CI/CD pipeline, security scanning, and documentation - was built through **natural language conversation** with Claude Code in GitHub Codespaces.
 
-GitHub Codespaces synchronized everything between mobile and desktop browsers:
+### The Conversation Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ SESSION 1: Initial Setup                                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│ Human: "Install the AWS CLI"                                            │
+│ Claude: [Installs AWS CLI v2, verifies installation]                    │
+│                                                                          │
+│ Human: "Let's log into AWS via SSO"                                     │
+│ Claude: [Configures SSO, authenticates, verifies credentials]           │
+│                                                                          │
+│ Human: "Create a static S3 website with Terraform, deploy with         │
+│         GitHub Actions using OIDC, verify via CloudWatch"               │
+│ Claude: [Creates entire infrastructure: Terraform files, IAM roles,     │
+│          GitHub Actions workflow, website files]                         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│ SESSION 2: DevSecOps Enhancements                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│ Human: "What security features does GitHub offer for pipelines?"        │
+│ Claude: [Researches and recommends: Dependabot, Trivy, CodeQL,          │
+│          Secret Scanning, Infracost, etc.]                               │
+│                                                                          │
+│ Human: "Add those security features to the pipeline"                    │
+│ Claude: [Updates workflow with Trivy, adds dependabot.yml,              │
+│          configures SARIF upload for Security tab]                       │
+│                                                                          │
+│ Human: "Check the Security tab for findings"                            │
+│ Claude: [Finds 15 Trivy findings, explains each one,                    │
+│          distinguishes false positives from real issues]                 │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### What Claude Code Did
+
+| Task | How Claude Helped |
+|------|-------------------|
+| **AWS Authentication** | Ran `aws sso configure`, handled the login flow |
+| **Infrastructure Design** | Designed Terraform modules with best practices |
+| **Error Resolution** | Fixed OIDC provider conflicts, IAM permission issues |
+| **Security Implementation** | Added Trivy scanning, configured Dependabot |
+| **Web Research** | Searched for latest GitHub security features |
+| **Documentation** | Wrote comprehensive explanations of all concepts |
+| **Troubleshooting** | Fixed S3 bucket deletion issues, permission errors |
+| **Verification** | Used AWS CLI to confirm resource states |
+
+### The Power of AI + CLI + Internet
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     CLAUDE CODE CAPABILITIES USED                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────┐                                                    │
+│  │   AWS CLI       │  Direct cloud infrastructure management            │
+│  │   Integration   │  - SSO authentication                              │
+│  │                 │  - Resource verification                           │
+│  │                 │  - State inspection                                │
+│  └─────────────────┘                                                    │
+│           +                                                              │
+│  ┌─────────────────┐                                                    │
+│  │   Web Search    │  Real-time information gathering                   │
+│  │   Capability    │  - Latest GitHub security features                 │
+│  │                 │  - Current best practices                          │
+│  │                 │  - Tool documentation                              │
+│  └─────────────────┘                                                    │
+│           +                                                              │
+│  ┌─────────────────┐                                                    │
+│  │   File System   │  Complete code management                          │
+│  │   Access        │  - Create Terraform files                          │
+│  │                 │  - Edit workflows                                  │
+│  │                 │  - Write documentation                             │
+│  └─────────────────┘                                                    │
+│           +                                                              │
+│  ┌─────────────────┐                                                    │
+│  │   Git/GitHub    │  Version control and CI/CD                         │
+│  │   Integration   │  - Commit changes                                  │
+│  │                 │  - Push to remote                                  │
+│  │                 │  - Check workflow status                           │
+│  └─────────────────┘                                                    │
+│           =                                                              │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │   FULL END-TO-END DEVSECOPS DEVELOPMENT                          │   │
+│  │                                                                   │   │
+│  │   Natural language → Production infrastructure                   │   │
+│  │   with security scanning, cost estimation, and automation        │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Real-Time Sync Across Devices
 
 ```
 ┌─────────────────┐         ┌─────────────────┐
@@ -662,46 +765,35 @@ GitHub Codespaces synchronized everything between mobile and desktop browsers:
 Commands typed on phone appeared on desktop instantly (and vice versa)
 ```
 
-### What This Means
-
-1. **No Local Dependencies**: Everything ran in the cloud - no need to install AWS CLI, Terraform, or any other tools locally
-
-2. **True Mobility**: Could respond to incidents, deploy fixes, and manage infrastructure from anywhere with a browser
-
-3. **Conversation Continuity**: The Claude Code conversation persisted across devices
-
-4. **Touch-Friendly**: VS Code Web in Codespaces worked on mobile devices
-
 ---
 
 ## Verification Results
+
+### Security Scan Results
+
+```
+Trivy IaC Scan: 15 findings
+├── Critical: 0
+├── High:     8 (6 expected for public website, 2 actionable)
+├── Medium:   2 (both actionable)
+└── Low:      5 (nice-to-have improvements)
+
+Dependabot: 6 PRs created automatically
+├── actions/checkout update
+├── actions/upload-artifact update
+├── actions/download-artifact update
+├── aws-actions/configure-aws-credentials update
+├── hashicorp/setup-terraform update
+└── Terraform provider updates
+```
 
 ### Deployment Verification
 
 ```
 Website URL: http://claude-codespaces-aws-s3-hello-world-site.s3-website-eu-west-1.amazonaws.com
 HTTP Status: 200 OK
-CloudWatch Log Entry: "Deployment successful - Commit: 009d279 - Triggered by: formicag"
-```
-
-### Teardown Verification (Confirmed Twice)
-
-```
-=== FIRST VERIFICATION ===
-S3 website bucket:    ✓ DELETED
-S3 tfstate bucket:    ✓ DELETED
-DynamoDB table:       ✓ DELETED
-IAM role:             ✓ DELETED
-IAM policy:           ✓ DELETED
-CloudWatch log group: ✓ DELETED
-
-=== SECOND VERIFICATION ===
-S3 website bucket:    ✓ DELETED (404 Not Found)
-S3 tfstate bucket:    ✓ DELETED (404 Not Found)
-DynamoDB table:       ✓ DELETED (ResourceNotFoundException)
-IAM role:             ✓ DELETED (NoSuchEntity)
-IAM policy:           ✓ DELETED (NoSuchEntity)
-CloudWatch log group: ✓ DELETED (empty array)
+Pipeline:    Security scan → Plan → Apply (all green)
+CloudWatch:  "Deployment successful - Commit: xxx - Triggered by: formicag"
 ```
 
 ---
@@ -714,40 +806,33 @@ CloudWatch log group: ✓ DELETED (empty array)
 - AWS account with SSO configured
 - Claude Code extension installed in Codespaces
 
-### Step-by-Step
+### Quick Start
 
 1. **Create a new GitHub repository**
 
 2. **Open in GitHub Codespaces**
    - Click "Code" → "Codespaces" → "Create codespace on main"
 
-3. **Authenticate with AWS**
+3. **Have a conversation with Claude Code**
    ```
-   Ask Claude: "Install AWS CLI and help me log in via SSO"
+   "Install AWS CLI and help me log in via SSO"
 
-   You'll need:
-   - SSO Start URL (e.g., https://your-company.awsapps.com/start)
-   - SSO Region (e.g., eu-west-1)
-   - Account ID
-   - Role name (e.g., AdministratorAccess)
-   ```
-
-4. **Deploy the infrastructure**
-   ```
-   Ask Claude: "Create a static S3 website with Terraform,
+   "Create a static S3 website with Terraform,
    deploy it with GitHub Actions using OIDC,
+   add Trivy security scanning,
+   configure Dependabot for updates,
    and verify it works via CloudWatch"
    ```
 
-5. **Verify the deployment**
-   - Check GitHub Actions tab for green checkmark
-   - Visit the website URL
-   - Check CloudWatch logs
+4. **Enable GitHub Security Features**
+   - Go to Settings → Code security and analysis
+   - Enable: Dependabot, Secret scanning, Push protection, CodeQL
 
-6. **Clean up**
-   ```
-   Ask Claude: "Remove all AWS resources and confirm they're gone"
-   ```
+5. **Watch the magic happen**
+   - Push triggers the pipeline
+   - Security scan runs
+   - Dependabot creates PRs
+   - Website deploys
 
 ---
 
@@ -756,9 +841,16 @@ CloudWatch log group: ✓ DELETED (empty array)
 ```
 .
 ├── .github/
-│   └── workflows/
-│       └── deploy.yml              # GitHub Actions CI/CD pipeline
-│                                    # This is the "hook" that triggers on push
+│   ├── workflows/
+│   │   └── deploy.yml              # Complete DevSecOps pipeline
+│   │                                # - Security scanning (Trivy)
+│   │                                # - Cost estimation (Infracost)
+│   │                                # - Terraform plan/apply
+│   │                                # - CloudWatch logging
+│   │
+│   └── dependabot.yml              # Automated dependency updates
+│                                    # - Terraform providers
+│                                    # - GitHub Actions
 │
 ├── terraform/
 │   ├── bootstrap/                   # Run once manually to set up OIDC
@@ -790,11 +882,16 @@ CloudWatch log group: ✓ DELETED (empty array)
 | Practice | How We Did It |
 |----------|---------------|
 | **No Stored Credentials** | OIDC federation - GitHub proves identity to AWS |
-| **Least Privilege** | IAM policies scoped to specific S3 buckets and resources |
-| **State Encryption** | Terraform state stored in S3 with encryption enabled |
+| **Security Scanning** | Trivy scans IaC before every deployment |
+| **Dependency Updates** | Dependabot auto-creates PRs for outdated packages |
+| **Secret Detection** | GitHub Secret Scanning with push protection |
+| **Code Analysis** | CodeQL for deep vulnerability detection |
+| **Least Privilege** | IAM policies scoped to specific S3 buckets |
+| **State Encryption** | Terraform state stored in S3 with encryption |
 | **State Locking** | DynamoDB table prevents concurrent modifications |
 | **Audit Trail** | CloudWatch logging for all deployments |
 | **Code Review** | Plan runs on PRs, Apply only on merge to main |
+| **Cost Visibility** | Infracost shows $ impact on PRs |
 
 ---
 
@@ -808,17 +905,21 @@ CloudWatch log group: ✓ DELETED (empty array)
 | **AWS IAM + OIDC** | Secure authentication | No stored credentials |
 | **Terraform** | Infrastructure as Code | Declarative, trackable, repeatable |
 | **GitHub Actions** | CI/CD automation | Built into GitHub, free tier available |
+| **Trivy** | Security scanning | Free, fast IaC vulnerability detection |
+| **Dependabot** | Dependency management | Automated update PRs |
+| **CodeQL** | Code analysis | Deep vulnerability detection |
+| **Infracost** | Cost estimation | $ impact visibility on PRs |
 | **CloudWatch** | Monitoring and logging | Audit trail for deployments |
 
 ---
 
 ## Key Takeaways
 
-### The Pattern (Memorize This!)
+### The DevSecOps Pattern (Memorize This!)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 1. CODE: Write your infrastructure as text files (.tf, .yml)           │
+│ 1. CODE: Write infrastructure as text files (.tf, .yml)                │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -826,27 +927,39 @@ CloudWatch log group: ✓ DELETED (empty array)
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 3. HOOK: .github/workflows/*.yml files trigger automatically           │
+│ 3. SECRET SCAN: GitHub checks for leaked credentials                   │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 4. LINT: Check code quality (formatting, syntax, security)             │
+│ 4. SECURITY SCAN: Trivy checks IaC for vulnerabilities                 │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 5. AUTH: OIDC proves GitHub's identity to AWS (no passwords!)          │
+│ 5. COST CHECK: Infracost shows $ impact (on PRs)                       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 6. PLAN: Terraform shows what WILL change                               │
+│ 6. LINT: Check code quality (formatting, syntax)                       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 7. APPLY: Terraform makes the changes via AWS SDK                       │
+│ 7. AUTH: OIDC proves GitHub's identity to AWS (no passwords!)          │
 └─────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ 8. VERIFY: Check the result (website live, logs captured)              │
+│ 8. PLAN: Terraform shows what WILL change                               │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 9. APPLY: Terraform makes the changes via AWS SDK                       │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 10. AUDIT: Log deployment to CloudWatch                                 │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ 11. MONITOR: Dependabot watches for outdated dependencies              │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -854,26 +967,33 @@ CloudWatch log group: ✓ DELETED (empty array)
 
 | Term | What It Actually Is |
 |------|---------------------|
-| **AWS CLI** | A tool you type commands into (`aws s3 ls`) |
-| **AWS SDK** | A code library that programs use internally |
-| **Terraform** | Uses AWS SDK directly, NOT the CLI |
-| **GitHub Actions** | Automation that runs when you push code |
+| **DevSecOps** | Development + Security + Operations integrated |
+| **IaC Scanning** | Checking infrastructure code for security issues |
+| **SARIF** | Standard format for security tool results |
 | **OIDC** | "Prove who you are without a password" |
-| **Linting** | Automated code quality checking |
+| **Trivy** | Open-source vulnerability scanner |
+| **Dependabot** | Automated dependency update service |
+| **CodeQL** | GitHub's code analysis engine |
 
 ---
 
 ## Conclusion
 
-This repository stands as evidence that the future of cloud development is:
-- **Location independent** - Work from any device
-- **Device agnostic** - Mobile, tablet, desktop - all the same
-- **Conversational** - Natural language replaces CLI memorization
-- **AI-assisted** - Complex patterns implemented through dialogue
-- **Secure by default** - OIDC, least privilege, no stored secrets
+This repository demonstrates that the future of cloud development is:
 
-The entire creation, deployment, verification, and teardown of this AWS infrastructure was accomplished through natural language conversation with Claude Code, executed from both mobile and desktop browsers in GitHub Codespaces.
+- **AI-Powered** - Natural language conversation builds production infrastructure
+- **Security-First** - Vulnerabilities caught before deployment
+- **Cost-Aware** - Infrastructure costs visible on every PR
+- **Automated** - Dependencies updated automatically
+- **Location Independent** - Work from any device
+- **Device Agnostic** - Mobile, tablet, desktop - all the same
+- **Auditable** - Every deployment logged and traceable
+- **Secure by Default** - OIDC, least privilege, no stored secrets
+
+The entire DevSecOps pipeline - from infrastructure code to security scanning to automated deployments - was built through natural language conversation with Claude Code, executed from both mobile and desktop browsers in GitHub Codespaces.
+
+**This is the future of development: AI-assisted, security-conscious, and accessible from anywhere.**
 
 ---
 
-*Built entirely using Claude Code in GitHub Codespaces - from conception to deployment to documentation.*
+*Built entirely using Claude Code in GitHub Codespaces - from conception to full DevSecOps pipeline to documentation.*
