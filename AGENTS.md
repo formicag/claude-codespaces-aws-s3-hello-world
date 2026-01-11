@@ -1,128 +1,96 @@
-# Multi-Agent Collaboration Trial
+# Multi-Agent Collaboration Protocol
 
-> **Experiment:** Testing two Claude Code agents working on the same project simultaneously
+Guidelines for multiple Claude Code instances working on the same repository concurrently.
 
-## The Scenario
+## Scenario
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         SAME GITHUB REPOSITORY                          │
-└─────────────────────────────────────────────────────────────────────────┘
-                    ▲                               ▲
-                    │                               │
-         ┌──────────┴──────────┐         ┌─────────┴──────────┐
-         │   AGENT 1 (Mac)     │         │  AGENT 2 (Codespace)│
-         │                     │         │                     │
-         │  Claude Code CLI    │         │  Claude Code CLI    │
-         │  Local Terminal     │         │  Browser-based      │
-         │  Home/Office        │         │  Mobile/Any Device  │
-         └─────────────────────┘         └─────────────────────┘
+GitHub Repository (source of truth)
+       ▲           ▲           ▲
+       │           │           │
+   Agent 1     Agent 2     Agent N
+   (Mac CLI)  (Codespaces)  (Other)
 ```
 
-## Trial Objectives
-
-1. **Test simultaneous development** - Can two agents work on different features at the same time?
-2. **Test handoff** - Can Agent 1 start work, then Agent 2 continue it?
-3. **Test conflict resolution** - What happens if both agents modify the same file?
-4. **Test communication** - Can agents read each other's status/notes?
+Multiple agents may run simultaneously - same developer on different devices, or different developers. Git is the synchronisation mechanism.
 
 ---
 
-## Trial Steps (To Do Tomorrow)
+## Protocol
 
-### Phase 1: Setup
+### Before Starting Work
 
-- [ ] Open Claude Code on Mac terminal (Agent 1)
-- [ ] Open Claude Code in Codespaces (Agent 2)
-- [ ] Both agents read this file and README.md
-- [ ] Both agents check git status
+```bash
+git pull origin main
+git status
+git log --oneline -5
+```
 
-### Phase 2: Parallel Work Test
+Check `AGENT_STATUS.md` if it exists - another agent may be working on related files.
 
-- [ ] Agent 1: Create a new feature (e.g., add a `/health` endpoint concept to website)
-- [ ] Agent 2: Create a different feature (e.g., add a new CSS theme)
-- [ ] Both agents commit and push
-- [ ] Check for conflicts
+### While Working
 
-### Phase 3: Handoff Test
+- Commit frequently with clear messages
+- Push regularly to share progress
+- Prefer working on different files to avoid conflicts
+- Use feature branches for larger changes
 
-- [ ] Agent 1: Start a feature but don't complete it
-- [ ] Agent 1: Update AGENT_STATUS.md with work in progress
-- [ ] Agent 2: Read AGENT_STATUS.md
-- [ ] Agent 2: Continue and complete Agent 1's work
+### Before Pushing
 
-### Phase 4: Conflict Test
+```bash
+git pull origin main          # Sync first
+terraform fmt -check          # If Terraform changes
+terraform validate
+git add -A
+git commit -m "type: description"
+git push origin main
+```
 
-- [ ] Both agents intentionally edit the same file
-- [ ] See how each agent handles the merge conflict
-- [ ] Document the resolution process
+### Commit Message Format
+
+```
+<type>: <description>
+
+Co-Authored-By: Claude <model> <noreply@anthropic.com>
+```
+
+Types: `feat`, `fix`, `docs`, `refactor`, `chore`, `test`
 
 ---
 
-## Expected Challenges
+## Conflict Resolution
 
-| Challenge | Potential Solution |
-|-----------|-------------------|
-| **Git conflicts** | Agents work on different files/branches |
-| **Duplicate work** | Status file shows who's working on what |
-| **Stale code** | Always `git pull` before starting |
-| **Lost context** | Comprehensive commit messages |
-| **Coordination** | Shared TODO/status files |
+If `git pull` fails with merge conflicts:
+
+1. Read both versions
+2. Decide which to keep (or combine)
+3. Edit the file to resolve
+4. `git add` + `git commit`
+5. Push
 
 ---
 
-## Files to Create for Trial
+## Status Tracking (Optional)
 
-### 1. AGENT_STATUS.md (Create during trial)
-A file where agents log their current status:
+Create `AGENT_STATUS.md` when coordinating:
+
 ```markdown
-# Agent Status
-
-## Currently Active Agents
-| Agent | Location | Working On | Started | Status |
-|-------|----------|------------|---------|--------|
-| Agent 1 | Mac Terminal | Adding health endpoint | 2024-01-12 10:00 | In Progress |
-| Agent 2 | Codespaces | Adding dark theme | 2024-01-12 10:15 | In Progress |
-
-## Recent Completions
-- [timestamp] Agent X completed feature Y
-```
-
-### 2. Test Features to Build
-- Simple HTML page addition
-- CSS modification
-- New Terraform resource (maybe a test S3 object)
-
----
-
-## Questions to Answer After Trial
-
-1. Did both agents successfully work in parallel?
-2. How did agents handle seeing each other's changes?
-3. What protocols worked well?
-4. What protocols need improvement?
-5. Is the status file approach effective?
-6. Should agents use branches instead of main?
-
----
-
-## Notes Space (Fill in during trial)
-
-### Agent 1 Notes:
-```
-(To be filled during trial)
-```
-
-### Agent 2 Notes:
-```
-(To be filled during trial)
-```
-
-### Observations:
-```
-(To be filled during trial)
+| Agent | Location | Working On | Status |
+|-------|----------|------------|--------|
+| 1 | Mac | Feature X | In Progress |
+| 2 | Codespaces | Bug fix Y | Complete |
 ```
 
 ---
 
-*This document will be updated with results after the multi-agent trial.*
+## Coordination Strategies
+
+**Different files:** Agents work on separate files - no conflicts possible
+
+**Feature branches:** Each agent works on own branch, merge via PR
+
+**Status file:** Agents check/update `AGENT_STATUS.md` before starting
+
+---
+
+*For use with Claude Code instances across multiple environments*
