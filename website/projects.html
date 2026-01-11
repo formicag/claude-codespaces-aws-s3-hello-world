@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - AWS S3 Static Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">AWS S3 Demo</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html" class="active">Projects</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Projects</h1>
+            <p class="subtitle">Sample Projects Built with Modern DevOps</p>
+        </header>
+
+        <main>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon">&#128640;</div>
+                    <h3>CI/CD Pipeline</h3>
+                    <p>Automated deployment pipeline using GitHub Actions with security scanning, cost estimation, and infrastructure as code.</p>
+                    <div class="project-tags">
+                        <span class="tag">GitHub Actions</span>
+                        <span class="tag">Terraform</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">&#128274;</div>
+                    <h3>OIDC Authentication</h3>
+                    <p>Secure AWS authentication using OpenID Connect federation - no stored credentials required.</p>
+                    <div class="project-tags">
+                        <span class="tag">AWS IAM</span>
+                        <span class="tag">Security</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">&#128202;</div>
+                    <h3>Infrastructure Monitoring</h3>
+                    <p>CloudWatch integration for deployment logging and audit trails with 7-day retention.</p>
+                    <div class="project-tags">
+                        <span class="tag">CloudWatch</span>
+                        <span class="tag">Monitoring</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-icon">&#129302;</div>
+                    <h3>AI-Assisted Development</h3>
+                    <p>Entire infrastructure built using Claude Code in GitHub Codespaces - from any device with a browser.</p>
+                    <div class="project-tags">
+                        <span class="tag">Claude Code</span>
+                        <span class="tag">Codespaces</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built with Claude Code in GitHub Codespaces</p>
+        </footer>
+    </div>
+</body>
+</html>
