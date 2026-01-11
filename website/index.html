@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World - AWS S3 Static Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hello World!</h1>
+            <p class="subtitle">Deployed with AI-Powered Infrastructure</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>About This Project</h2>
+                <p>
+                    This static website demonstrates a complete CI/CD pipeline built entirely
+                    using <strong>Claude Code</strong> in GitHub Codespaces. From infrastructure
+                    as code to automated deployments, every component was created through
+                    AI-assisted development.
+                </p>
+            </div>
+
+            <div class="tech-stack">
+                <h2>Technology Stack</h2>
+                <ul>
+                    <li><span class="icon">&#9729;</span> <strong>AWS S3</strong> - Static website hosting</li>
+                    <li><span class="icon">&#128736;</span> <strong>Terraform</strong> - Infrastructure as Code</li>
+                    <li><span class="icon">&#128187;</span> <strong>GitHub Actions</strong> - CI/CD pipeline</li>
+                    <li><span class="icon">&#128274;</span> <strong>OIDC</strong> - Secure AWS authentication</li>
+                    <li><span class="icon">&#129302;</span> <strong>Claude Code</strong> - AI development assistant</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>How It Works</h2>
+                <ol>
+                    <li>Code changes are pushed to GitHub</li>
+                    <li>GitHub Actions triggers the deployment workflow</li>
+                    <li>OIDC authenticates with AWS (no stored secrets)</li>
+                    <li>Terraform provisions/updates the infrastructure</li>
+                    <li>Website files are deployed to S3</li>
+                    <li>CloudWatch monitors the deployment</li>
+                </ol>
+            </div>
+        </main>
+
+        <footer>
+            <p>Built with Claude Code in GitHub Codespaces</p>
+            <p class="timestamp">Deployment timestamp: <span id="timestamp"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>
