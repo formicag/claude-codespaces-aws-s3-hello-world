@@ -85,6 +85,14 @@ resource "aws_s3_object" "styles" {
   etag         = filemd5("../../website/styles.css")
 }
 
+resource "aws_s3_object" "contact" {
+  bucket       = aws_s3_bucket.website.id
+  key          = "contact.html"
+  source       = "../../website/contact.html"
+  content_type = "text/html"
+  etag         = filemd5("../../website/contact.html")
+}
+
 # CloudWatch Log Group for website access logging
 resource "aws_cloudwatch_log_group" "website" {
   name              = "/aws/s3/${var.bucket_name}"
