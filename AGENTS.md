@@ -1,99 +1,183 @@
-# Multi-Agent Collaboration Protocol
+# Multi-Environment Development with Claude Code
 
-Guidelines for multiple Claude Code instances working on the same repository concurrently.
-
-## Scenario
-
-```
-GitHub Repository (source of truth)
-       ▲           ▲           ▲
-       │           │           │
-   Agent 1     Agent 2     Agent N
-   (Mac CLI)  (Codespaces)  (Other)
-```
-
-Multiple agents may run simultaneously - same developer on different devices, or different developers. Git is the synchronisation mechanism.
+Guidelines for working with Claude Code across different environments (Mac terminal, GitHub Codespaces, etc.).
 
 ---
 
-## Protocol
+## Key Insight: One Environment at a Time
 
-### Before Starting Work
+This project enables development from anywhere:
 
-```bash
-git pull origin main
-git status
-git log --oneline -5
+```
+At Home (Mac Terminal)          On the Move (Codespaces via iPhone/iPad)
+        │                                    │
+        └──────── Same Repository ───────────┘
+                         │
+              Continue work seamlessly
 ```
 
-Check `AGENT_STATUS.md` if it exists - another agent may be working on related files.
+**Rule:** Work in ONE environment at a time. Switch environments when you change location/device - don't run both simultaneously.
 
-### While Working
+---
 
-- Commit frequently with clear messages
-- Push regularly to share progress
-- Prefer working on different files to avoid conflicts
-- Use feature branches for larger changes
+## Why Not Simultaneous Agents?
 
-### Before Pushing
+We tested running two independent Claude Code agents simultaneously (Mac + Codespaces). Results:
+
+| What We Tried | Result |
+|---------------|--------|
+| Written protocol in AGENTS.md | Agents read it but "forgot" during long tasks |
+| AGENT_STATUS.md tracking | Helpful but not enforced |
+| Reminders to follow protocol | Only works with manual intervention |
+| Git as coordination | Caught conflicts but required manual resolution |
+
+**Root Cause:** Two independent Claude Code sessions have no shared state. Protocol documents don't persist in agent memory across many turns. Git is the only connection, and it's reactive (catches conflicts) not proactive (prevents them).
+
+---
+
+## Recommended Approaches
+
+### 1. Sequential Environment Switching (Primary Use Case)
+
+Work in one environment, commit and push, then continue in another:
 
 ```bash
-git pull origin main          # Sync first
-terraform fmt -check          # If Terraform changes
-terraform validate
+# Mac Terminal (at home)
+claude
+# ... work on features ...
+git add -A && git commit -m "feat: partial progress" && git push
+
+# Later, on iPhone via Codespaces
+git pull origin main
+claude
+# ... continue the work ...
+```
+
+This is the intended workflow for this project - develop from anywhere without being tied to a specific device.
+
+### 2. Parallel Features via Subagents (Anthropic's Recommendation)
+
+For simultaneous work on multiple features, use ONE Claude session with background subagents:
+
+```
+Single Claude Code Session
+        │
+        ├── Subagent A (background) ──► Projects page
+        └── Subagent B (background) ──► Contact page
+        │
+        └── Parent coordinates and merges
+```
+
+Example prompt:
+```
+Run two subagents in parallel:
+1. First subagent: Create a Projects page with project cards
+2. Second subagent: Create a Contact page with a form
+
+Both should add navigation. I'll handle any conflicts when they complete.
+```
+
+**Why this works:** The parent agent manages coordination, and subagents return results to it. No git conflicts because it's a single session.
+
+### 3. Feature Branches (For True Parallel Development)
+
+If you must use separate environments simultaneously:
+
+```bash
+# Mac Terminal
+git checkout -b feature-projects
+claude
+# ... work ...
+git push -u origin feature-projects
+
+# Codespaces (simultaneously)
+git checkout -b feature-contact
+claude
+# ... work ...
+git push -u origin feature-contact
+
+# Merge via Pull Requests - conflicts resolved in PR review
+```
+
+---
+
+## Project Setup: Enforcement Hooks
+
+Protocol documents don't persist in agent memory. Use hooks in `.claude/settings.json` to enforce rules:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [[ \"$CLAUDE_TOOL_INPUT\" == *\"git push\"* ]]; then echo \"[Hook] Reminder: Always git pull before pushing.\"; fi; exit 0'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Add this after launching Claude Code in a new project:
+```bash
+claude
+# Then: "Set up the .claude/settings.json with git push reminder hooks"
+```
+
+---
+
+## When Switching Environments
+
+### Leaving Current Environment
+
+```bash
+git status                    # Check for uncommitted work
 git add -A
-git commit -m "type: description"
+git commit -m "wip: switching environments"
 git push origin main
 ```
 
-### Commit Message Format
+### Entering New Environment
 
-```
-<type>: <description>
-
-Co-Authored-By: Claude <model> <noreply@anthropic.com>
-```
-
-Types: `feat`, `fix`, `docs`, `refactor`, `chore`, `test`
-
----
-
-## Conflict Resolution
-
-If `git pull` fails with merge conflicts:
-
-1. Read both versions
-2. Decide which to keep (or combine)
-3. Edit the file to resolve
-4. `git add` + `git commit`
-5. Push
-
----
-
-## Status Tracking (Optional)
-
-Create `AGENT_STATUS.md` when coordinating:
-
-```markdown
-| Agent | Location | Working On | Status |
-|-------|----------|------------|--------|
-| 1 | Mac | Feature X | In Progress |
-| 2 | Codespaces | Bug fix Y | Complete |
+```bash
+git pull origin main          # Get latest changes
+git log --oneline -3          # Review recent commits
+claude                        # Resume work
 ```
 
 ---
 
-## Coordination Strategies
+## Subagents Within Each Environment
 
-**Different files:** Agents work on separate files - no conflicts possible
+Each environment can run parallel subagents internally:
 
-**Feature branches:** Each agent works on own branch, merge via PR
+```
+Mac Terminal Session                    Codespaces Session
+        │                                       │
+   ┌────┴────┐                            ┌────┴────┐
+Subagent  Subagent                    Subagent  Subagent
+   A         B                           C         D
+```
 
-**Status file:** Agents check/update `AGENT_STATUS.md` before starting
+Use subagents for:
+- Parallel research tasks
+- Running tests while coding
+- Code review while implementing
+
+Example:
+```
+Research the auth module and the API module in parallel using subagents,
+then summarize findings.
+```
 
 ---
 
-## Case Study: Projects + Contact Pages
+## Case Study: Projects + Contact Pages (January 2026)
 
 Two agents worked simultaneously on overlapping features:
 
@@ -142,8 +226,29 @@ Both agents modified:
 ### Result
 Final navigation: **Home | Projects | Contact**
 
-Both features deployed successfully. Protocol validated.
+Both features deployed successfully, but required manual conflict resolution.
+
+### Lessons Learned
+
+| Issue | Impact |
+|-------|--------|
+| Protocol not persistent | Agent A forgot to pull before pushing |
+| No shared state | Each agent unaware of other's progress |
+| Manual intervention needed | User had to remind agents of protocol |
+
+**Conclusion:** Git-based coordination works but requires manual intervention. Better to use subagents within a single session for parallel features.
 
 ---
 
-*For use with Claude Code instances across multiple environments*
+## Summary
+
+| Scenario | Approach |
+|----------|----------|
+| Different locations/devices | Sequential: one environment at a time |
+| Parallel features, same session | Subagents (Anthropic recommended) |
+| True parallel, different people | Feature branches + PRs |
+| Need to enforce protocols | Use `.claude/settings.json` hooks |
+
+---
+
+*This document reflects learnings from testing Claude Code in GitHub Codespaces and Mac Terminal*
