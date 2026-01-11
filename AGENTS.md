@@ -93,4 +93,57 @@ Create `AGENT_STATUS.md` when coordinating:
 
 ---
 
+## Case Study: Projects + Contact Pages
+
+Two agents worked simultaneously on overlapping features:
+
+### Setup
+```
+Agent A (Mac Terminal)     Contact-Agent (Codespaces)
+        │                           │
+        └──────── GitHub ───────────┘
+```
+
+### Tasks
+- **Agent A:** Add Projects page + site navigation
+- **Contact-Agent:** Add Contact page + site navigation
+
+### Overlapping Files
+Both agents modified:
+- `website/index.html` (navigation)
+- `website/error.html` (navigation)
+- `website/styles.css` (navigation + component styles)
+- `terraform/website/main.tf` (new S3 objects)
+
+### Timeline
+1. Both agents started work, created `AGENT_STATUS.md`
+2. Contact-Agent committed and pushed first
+3. Agent A's push was rejected
+4. Agent A ran `git pull`, received 5 merge conflicts
+5. Agent A resolved conflicts by combining both features
+6. Agent A pushed merged result
+7. CI/CD deployed unified site
+
+### Conflict Resolution Example
+
+```diff
+# website/index.html navigation - BEFORE (conflict)
+<<<<<<< HEAD
+    <li><a href="projects.html">Projects</a></li>
+=======
+    <li><a href="contact.html">Contact</a></li>
+>>>>>>> origin/main
+
+# AFTER (resolved)
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="contact.html">Contact</a></li>
+```
+
+### Result
+Final navigation: **Home | Projects | Contact**
+
+Both features deployed successfully. Protocol validated.
+
+---
+
 *For use with Claude Code instances across multiple environments*

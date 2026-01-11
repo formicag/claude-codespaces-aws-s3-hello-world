@@ -169,6 +169,25 @@ When multiple Claude Code instances work on the same repo (e.g., Mac terminal + 
 3. Commit frequently, push regularly
 4. Use feature branches for larger changes
 
+### Experiment Results
+
+We successfully tested concurrent development with two Claude Code agents:
+
+| Agent | Task | Environment |
+|-------|------|-------------|
+| Agent A | Projects page + navigation | Mac Terminal |
+| Contact-Agent | Contact page + navigation | Codespaces |
+
+**Intentional overlap areas:**
+- `website/index.html` - both added navigation
+- `website/error.html` - both added navigation
+- `website/styles.css` - both added styles
+- `terraform/website/main.tf` - both added S3 objects
+
+**Result:** Agent A's push was rejected (Contact-Agent pushed first). Agent A pulled, resolved 5 merge conflicts by combining both features, and pushed the merged result. Final site has unified navigation: **Home | Projects | Contact**
+
+This validates that the git-based coordination protocol works for real concurrent AI development
+
 ---
 
 ## Security Practices
