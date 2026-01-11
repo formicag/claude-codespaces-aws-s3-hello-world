@@ -10,6 +10,19 @@ This repository demonstrates a complete DevSecOps workflow that can be executed 
 
 ---
 
+## Website Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| **Home** | `/` | Landing page with project overview and tech stack |
+| **Projects** | `/projects.html` | Project showcase with card grid layout |
+| **Contact** | `/contact.html` | Contact form (name, email, message) |
+| **404** | `/error.html` | Custom error page |
+
+All pages feature a sticky navigation bar and responsive design.
+
+---
+
 ## Architecture
 
 ```
@@ -102,8 +115,14 @@ Production hardening recommendations:
 ├── terraform/
 │   ├── bootstrap/               # OIDC, IAM, state backend (run once)
 │   └── website/                 # S3, CloudWatch (deployed via Actions)
-├── website/                     # Static files
-└── AGENTS.md                    # Multi-agent coordination protocol
+├── website/
+│   ├── index.html               # Home page
+│   ├── projects.html            # Projects showcase
+│   ├── contact.html             # Contact form
+│   ├── error.html               # 404 error page
+│   └── styles.css               # Shared styles (nav, forms, cards)
+├── AGENTS.md                    # Multi-agent coordination protocol
+└── AGENT_STATUS.md              # Current agent work status
 ```
 
 ---
@@ -193,6 +212,10 @@ terraform apply         # Deploy
 | `.github/workflows/deploy.yml` | CI/CD pipeline definition |
 | `terraform/bootstrap/main.tf` | OIDC provider, IAM role, state backend |
 | `terraform/website/main.tf` | S3 bucket, website config, CloudWatch |
+| `website/index.html` | Home page with tech stack overview |
+| `website/projects.html` | Projects showcase with card grid |
+| `website/contact.html` | Contact form page |
+| `website/styles.css` | Shared CSS (navigation, forms, cards, responsive) |
 
 ---
 
