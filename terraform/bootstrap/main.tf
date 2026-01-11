@@ -90,7 +90,9 @@ resource "aws_iam_policy" "github_actions" {
           "logs:CreateLogStream",
           "logs:PutLogEvents",
           "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams"
+          "logs:DescribeLogStreams",
+          "logs:TagResource",
+          "logs:DeleteLogGroup"
         ]
         Resource = "*"
       }
