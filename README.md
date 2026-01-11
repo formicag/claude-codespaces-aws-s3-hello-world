@@ -23,6 +23,7 @@ This repository demonstrates a paradigm shift in cloud development: the ability 
 9. [Verification Results](#verification-results)
 10. [How to Recreate This](#how-to-recreate-this)
 11. [Repository Structure](#repository-structure)
+12. [AI Agent Collaboration Protocol](#ai-agent-collaboration-protocol)
 
 ---
 
@@ -872,7 +873,8 @@ CloudWatch:  "Deployment successful - Commit: xxx - Triggered by: formicag"
 │   └── styles.css                  # Styling
 │
 ├── .gitignore                       # Files Git should ignore
-└── README.md                        # This documentation
+├── README.md                        # This documentation
+└── AGENTS.md                        # Multi-agent collaboration trial notes
 ```
 
 ---
@@ -974,6 +976,276 @@ CloudWatch:  "Deployment successful - Commit: xxx - Triggered by: formicag"
 | **Trivy** | Open-source vulnerability scanner |
 | **Dependabot** | Automated dependency update service |
 | **CodeQL** | GitHub's code analysis engine |
+
+---
+
+## AI Agent Collaboration Protocol
+
+> **Important:** This codebase is developed by AI agents (Claude Code). Multiple agents may work on this project simultaneously from different environments. All agents must follow these protocols.
+
+### The Multi-Agent Scenario
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         GITHUB REPOSITORY                                │
+│                    (Single Source of Truth)                              │
+└─────────────────────────────────────────────────────────────────────────┘
+         ▲                    ▲                    ▲
+         │                    │                    │
+┌────────┴────────┐  ┌────────┴────────┐  ┌───────┴────────┐
+│   AGENT 1       │  │   AGENT 2       │  │   AGENT N      │
+│   Mac Terminal  │  │   Codespaces    │  │   Any Device   │
+│   Claude Code   │  │   Claude Code   │  │   Claude Code  │
+│   (Developer A) │  │   (Developer A) │  │   (Developer B)│
+└─────────────────┘  └─────────────────┘  └────────────────┘
+
+Same developer can have agents on multiple devices
+Multiple developers can have their own agents
+All agents work on the same codebase
+```
+
+### When Starting Work (Every Agent Must Do This)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: SYNC WITH REMOTE                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   git pull origin main                                                  │
+│                                                                          │
+│   WHY: Another agent may have pushed changes. Always start fresh.       │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: READ PROJECT DOCUMENTATION                                       │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   Read these files:                                                      │
+│   - README.md (this file - understand the project)                      │
+│   - AGENT_STATUS.md (if exists - see what others are working on)        │
+│   - Any TODO.md or TASKS.md files                                       │
+│                                                                          │
+│   WHY: Understand current state and avoid duplicate work.               │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: CHECK GIT STATUS                                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   git status                                                             │
+│   git log --oneline -5                                                  │
+│                                                                          │
+│   WHY: See recent changes and ensure clean working directory.           │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: ANNOUNCE YOUR WORK (Optional but Recommended)                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   Update AGENT_STATUS.md with:                                          │
+│   - What you're working on                                               │
+│   - Which files you'll modify                                           │
+│   - Estimated scope                                                      │
+│                                                                          │
+│   WHY: Other agents can see what's in progress.                         │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### While Working (Best Practices)
+
+| Practice | Why It Matters |
+|----------|----------------|
+| **Commit frequently** | Smaller commits = easier merges |
+| **Push regularly** | Other agents see your progress |
+| **Clear commit messages** | Explains what changed and why |
+| **Work on separate files** | Reduces merge conflicts |
+| **Use feature branches** | For larger changes, isolate work |
+| **Pull before push** | Always sync before pushing |
+
+### Commit Message Format
+
+All agents should use consistent commit messages:
+
+```
+<type>: <short description>
+
+<longer description if needed>
+
+Co-Authored-By: Claude <agent-type> <noreply@anthropic.com>
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation
+- `refactor:` - Code refactoring
+- `chore:` - Maintenance tasks
+- `test:` - Adding tests
+
+**Example:**
+```
+feat: add dark mode toggle to website
+
+Added CSS variables for theming and a toggle button in the header.
+Dark mode preference is saved to localStorage.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+### When Completing Work (Every Agent Must Do This)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: PULL LATEST CHANGES                                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   git pull origin main                                                  │
+│                                                                          │
+│   WHY: Another agent may have pushed while you were working.            │
+│   Handle any merge conflicts before pushing.                            │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: RUN VALIDATION (if applicable)                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   For Terraform: terraform fmt && terraform validate                    │
+│   For code: run linters, tests                                          │
+│   For docs: check links, formatting                                     │
+│                                                                          │
+│   WHY: Don't push broken code that blocks other agents.                 │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: COMMIT WITH CLEAR MESSAGE                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   git add -A                                                             │
+│   git commit -m "type: clear description"                               │
+│                                                                          │
+│   Include Co-Authored-By line.                                          │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: PUSH TO REMOTE                                                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   git push origin main                                                  │
+│                                                                          │
+│   If push fails due to remote changes, pull and retry.                  │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 5: UPDATE STATUS (if using AGENT_STATUS.md)                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   Mark your work as complete.                                           │
+│   Note any follow-up tasks.                                              │
+│   Push the status update.                                                │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Handling Merge Conflicts
+
+When two agents modify the same file:
+
+```
+Agent 1 pushed:              Agent 2 tries to push:
+┌─────────────────────┐      ┌─────────────────────┐
+│ Line 10: color: blue│      │ Line 10: color: red │
+└─────────────────────┘      └─────────────────────┘
+                                        │
+                                        ▼
+                             ┌─────────────────────┐
+                             │ CONFLICT DETECTED   │
+                             │                     │
+                             │ git pull fails with │
+                             │ merge conflict      │
+                             └─────────────────────┘
+                                        │
+                                        ▼
+                             ┌─────────────────────┐
+                             │ RESOLUTION:         │
+                             │                     │
+                             │ 1. Read both changes│
+                             │ 2. Decide which wins│
+                             │    (or combine both)│
+                             │ 3. Edit the file    │
+                             │ 4. git add + commit │
+                             │ 5. Push             │
+                             └─────────────────────┘
+```
+
+### Agent Coordination Strategies
+
+**Strategy 1: Different Files**
+```
+Agent 1: Works on terraform/website/main.tf
+Agent 2: Works on website/styles.css
+Result:  No conflicts possible
+```
+
+**Strategy 2: Feature Branches**
+```
+Agent 1: git checkout -b feature/add-logging
+Agent 2: git checkout -b feature/add-dark-mode
+Result:  Each agent works in isolation, merge via PR
+```
+
+**Strategy 3: Status File**
+```
+AGENT_STATUS.md:
+┌────────────────────────────────────────────────────────┐
+│ Agent    │ Location   │ Working On      │ Status      │
+├────────────────────────────────────────────────────────┤
+│ Agent 1  │ Mac        │ Logging feature │ In Progress │
+│ Agent 2  │ Codespaces │ Dark mode       │ Complete    │
+└────────────────────────────────────────────────────────┘
+```
+
+### Quick Reference Card for Agents
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     AI AGENT QUICK REFERENCE                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  STARTING WORK:                                                          │
+│  □ git pull origin main                                                 │
+│  □ Read README.md and AGENT_STATUS.md                                   │
+│  □ git status && git log --oneline -5                                   │
+│  □ Update AGENT_STATUS.md with your task                                │
+│                                                                          │
+│  WHILE WORKING:                                                          │
+│  □ Commit frequently with clear messages                                │
+│  □ Push regularly to share progress                                     │
+│  □ Work on different files than other agents                            │
+│                                                                          │
+│  COMPLETING WORK:                                                        │
+│  □ git pull origin main (handle conflicts)                              │
+│  □ Run validation (terraform fmt, linters, etc.)                        │
+│  □ git add -A && git commit with Co-Authored-By                         │
+│  □ git push origin main                                                 │
+│  □ Update AGENT_STATUS.md                                               │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Related Files
+
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | Multi-agent trial documentation and notes |
+| `AGENT_STATUS.md` | Real-time status of active agents (create when needed) |
 
 ---
 
